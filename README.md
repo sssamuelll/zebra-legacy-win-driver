@@ -1,30 +1,30 @@
 # Zebra Legacy Win Driver
 
-Capa de compatibilidad para **Zebra GC420d, TLP 2844 y TLP 2844-Z en Windows 10/11 x64**. Usa el driver oficial **ZDesigner v5** y el spooler de Windows; **no es un driver kernel, no está firmado y no sustituye soporte del fabricante**.
+Compatibility layer for **Zebra GC420d, TLP 2844, and TLP 2844-Z on Windows 10/11 x64**. It uses the official **ZDesigner v5** driver and the Windows spooler; **it is not a kernel driver, is not signed, and does not replace manufacturer support**.
 
-El repositorio no contiene, descarga ni redistribuye binarios Zebra.
+This repository does not contain, download, or redistribute Zebra binaries.
 
-## Qué incluye
+## What is included
 
-- CLI .NET 8 sin dependencias de runtime externas.
-- Perfiles JSON validados por modelo, lenguaje, dpi y tamaño.
-- Smoke labels EPL2 y ZPL con salida ASCII controlada.
-- Envío RAW explícito mediante `winspool.drv`; dry-run por defecto y errores sin exponer payloads.
-- Núcleo portable separado de Win32.
-- Unit tests sin hardware e integración de solo lectura omitida sin Windows/cola.
-- Inventario PowerShell y plan físico para distinguir TLP 2844 de TLP 2844-Z.
+- .NET 8 CLI with no external runtime dependencies.
+- JSON profiles validated by model, language, dpi, and size.
+- EPL2 and ZPL smoke labels with controlled ASCII output.
+- Explicit RAW submission through `winspool.drv`; dry-run by default and errors that do not expose payloads.
+- Portable core separated from Win32.
+- Hardware-free unit tests and a read-only integration test skipped without Windows/a printer queue.
+- PowerShell inventory and a physical plan to distinguish TLP 2844 from TLP 2844-Z.
 
-## Límites importantes
+## Important limitations
 
-- No instala ni empaqueta ZDesigner.
-- No detecta el modelo físico de forma infalible: hay que leer placa y autodiagnóstico.
-- No calibra, actualiza firmware ni administra colas.
-- `--send` imprime realmente; no lo use antes de completar el plan supervisado.
-- La licencia de este repositorio está pendiente; consulte `LICENSE`.
+- Does not install or package ZDesigner.
+- Cannot identify the physical model infallibly: inspect the nameplate and self-test.
+- Does not calibrate, update firmware, or manage queues.
+- `--send` really prints; do not use it before completing the supervised plan.
+- This repository's license is pending; see `LICENSE`.
 
-## Inicio rápido (sin imprimir)
+## Quick start (without printing)
 
-Requiere .NET 8 SDK. En Windows PowerShell:
+Requires the .NET 8 SDK. In Windows PowerShell:
 
 ```powershell
 dotnet restore .\ZebraLegacy.sln
@@ -33,45 +33,45 @@ dotnet test .\ZebraLegacy.sln -c Release --no-build --filter "TestCategory!=Inte
 Copy-Item .\profiles.example.json .\profiles.local.json
 
 dotnet run --project .\src\ZebraLegacy.Cli -- validate --config .\profiles.local.json
-dotnet run --project .\src\ZebraLegacy.Cli -- smoke --config .\profiles.local.json --profile almacen-gc420d
+dotnet run --project .\src\ZebraLegacy.Cli -- smoke --config .\profiles.local.json --profile warehouse-gc420d
 ```
 
-La última orden genera el payload en memoria y solo muestra lenguaje, longitud y SHA-256:
+The last command generates the payload in memory and displays only its language, length, and SHA-256:
 
 ```text
-DRY-RUN: no se ha enviado nada. Añada --send solo tras completar el plan físico.
+DRY-RUN: nothing was sent. Add --send only after completing the physical plan.
 ```
 
-Para obtener un smoke test EPL2 use un perfil `Epl2`; para ZPL use `Zpl`. `Tlp2844` sin sufijo Z rechaza ZPL deliberadamente. Solo tras aprobación física, Windows y una cola dedicada:
+For an EPL2 smoke test, use an `Epl2` profile; for ZPL, use `Zpl`. `Tlp2844` without the Z suffix deliberately rejects ZPL. Only after physical approval, on Windows, with a dedicated queue:
 
 ```powershell
-# ACCIÓN REAL: envía un único trabajo RAW
-# dotnet run --project .\src\ZebraLegacy.Cli -- smoke --config .\profiles.local.json --profile almacen-gc420d --send
+# REAL ACTION: submits one RAW job
+# dotnet run --project .\src\ZebraLegacy.Cli -- smoke --config .\profiles.local.json --profile warehouse-gc420d --send
 ```
 
-La línea permanece comentada para impedir ejecución accidental al copiar el bloque.
+The line remains commented out to prevent accidental execution when the block is copied.
 
-## Instalación del driver oficial
+## Installing the official driver
 
-Consulte [`docs/INSTALLATION.md`](docs/INSTALLATION.md). En resumen: busque el **modelo exacto** en <https://www.zebra.com/us/en/support-downloads.html>, compruebe que ZDesigner v5 declara compatibilidad x64 con su versión de Windows y acepte la licencia directamente con Zebra. No use mirrors. Este proyecto no descarga nada.
+See [`docs/INSTALLATION.md`](docs/INSTALLATION.md). In short: find the **exact model** at <https://www.zebra.com/us/en/support-downloads.html>, verify that ZDesigner v5 declares x64 compatibility with your Windows version, and accept the license directly from Zebra. Do not use mirrors. This project downloads nothing.
 
-## Flujo operativo
+## Operating workflow
 
-1. Ejecute `scripts/Inventory-Zebra.ps1` (solo lectura).
+1. Run `scripts/Inventory-Zebra.ps1` (read-only).
 2. Complete [`docs/INVENTORY_AND_PHYSICAL_PLAN.md`](docs/INVENTORY_AND_PHYSICAL_PLAN.md).
-3. Instale/configure ZDesigner v5 desde fuentes oficiales.
-4. Cree `profiles.local.json` (ignorado por Git) a partir del ejemplo.
-5. Ejecute `validate` y `smoke` sin `--send`.
-6. Una persona autorizada revisa modelo, lenguaje, puerto, consumible y cola.
-7. Solo entonces ejecute una vez con `--send` y observe físicamente.
+3. Install/configure ZDesigner v5 from official sources.
+4. Create `profiles.local.json` (ignored by Git) from the example.
+5. Run `validate` and `smoke` without `--send`.
+6. Have an authorized person review the model, language, port, media, and queue.
+7. Only then run once with `--send` and observe the printer physically.
 
-## Configuración
+## Configuration
 
 ```json
 {
   "profiles": [
     {
-      "name": "almacen-gc420d",
+      "name": "warehouse-gc420d",
       "printerName": "ZDesigner GC420d",
       "model": "Gc420d",
       "language": "Zpl",
@@ -83,19 +83,19 @@ Consulte [`docs/INSTALLATION.md`](docs/INSTALLATION.md). En resumen: busque el *
 }
 ```
 
-Modelos: `Gc420d`, `Tlp2844`, `Tlp2844Z`. Lenguajes: `Epl2`, `Zpl`. El nombre de cola debe contener `ZDesigner`. Los modelos cubiertos usan perfiles de 203 dpi.
+Models: `Gc420d`, `Tlp2844`, `Tlp2844Z`. Languages: `Epl2`, `Zpl`. The queue name must contain `ZDesigner`. The covered models use 203 dpi profiles.
 
-## Diseño y decisión técnica
+## Design and technical decision
 
-- [Arquitectura y controles](docs/ARCHITECTURE.md)
-- [ADR-0001: reutilizar ZDesigner y spooler](docs/adr/0001-reutilizar-zdesigner-spooler.md)
+- [Architecture and controls](docs/ARCHITECTURE.md)
+- [ADR-0001: reuse ZDesigner and the spooler](docs/adr/0001-reuse-zdesigner-spooler.md)
 
-El preflight comparó brevemente ZDesigner v5, Zebra Setup Utilities, SDKs/librerías y un driver propio. El driver oficial + spooler RAW resulta la opción mantenible con menor privilegio y sin duplicar una solución existente.
+The preflight briefly compared ZDesigner v5, Zebra Setup Utilities, SDKs/libraries, and a custom driver. The official driver plus RAW spooler is the maintainable, least-privilege option that avoids duplicating an existing solution.
 
-## Desarrollo y CI
+## Development and CI
 
-Consulte [`docs/CI.md`](docs/CI.md). La CI compila en Windows/macOS y excluye integración. Las pruebas de integración solo abren una cola indicada por `ZEBRA_TEST_PRINTER`; nunca llaman a `WritePrinter`.
+See [`docs/CI.md`](docs/CI.md). CI builds on Windows/macOS and excludes integration tests. Integration tests only open a queue specified by `ZEBRA_TEST_PRINTER`; they never call `WritePrinter`.
 
-## Seguridad y diagnóstico
+## Security and diagnostics
 
-Los payloads no se imprimen en consola ni se guardan por defecto. El adaptador limita el tamaño, cierra handles en `finally` y no reintenta para evitar duplicados. Ante error, registre código Win32, estado de cola y resultado físico, pero no seriales ni datos sensibles en Git.
+Payloads are not printed to the console or saved by default. The adapter limits size, closes handles in `finally`, and does not retry, to avoid duplicates. On error, record the Win32 code, queue status, and physical result, but do not commit serial numbers or sensitive data to Git.

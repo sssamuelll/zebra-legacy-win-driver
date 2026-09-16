@@ -1,7 +1,7 @@
 {
   "profiles": [
     {
-      "name": "almacen-gc420d",
+      "name": "warehouse-gc420d",
       "printerName": "ZDesigner GC420d",
       "model": "Gc420d",
       "language": "Zpl",
@@ -10,7 +10,7 @@
       "heightDots": 406
     },
     {
-      "name": "expedicion-tlp2844",
+      "name": "shipping-tlp2844",
       "printerName": "ZDesigner TLP 2844",
       "model": "Tlp2844",
       "language": "Epl2",

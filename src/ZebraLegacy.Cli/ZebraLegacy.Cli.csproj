@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <Description>CLI segura para smoke tests Zebra mediante el spooler de Windows.</Description>
+    <Description>Safe CLI for Zebra smoke tests through the Windows spooler.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ZebraLegacy.Core\ZebraLegacy.Core.csproj" />

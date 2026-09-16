@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>Núcleo portable para perfiles y etiquetas Zebra legacy.</Description>
+    <Description>Portable core for legacy Zebra profiles and labels.</Description>
   </PropertyGroup>
 </Project>

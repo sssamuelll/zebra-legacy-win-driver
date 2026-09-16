@@ -3,22 +3,22 @@ param()
 
 $ErrorActionPreference = 'Stop'
 if ($env:OS -ne 'Windows_NT') {
-    throw 'Este inventario requiere Windows.'
+    throw 'This inventory requires Windows.'
 }
 
-Write-Host '=== Colas Zebra/ZDesigner (solo lectura) ==='
+Write-Host '=== Zebra/ZDesigner queues (read-only) ==='
 $printers = Get-Printer | Where-Object {
     $_.Name -match 'Zebra|ZDesigner|GC420|2844' -or $_.DriverName -match 'Zebra|ZDesigner|GC420|2844'
 }
 $printers | Select-Object Name, DriverName, PortName, PrinterStatus, Shared | Format-Table -AutoSize
 
-Write-Host "`n=== Drivers relacionados ==="
+Write-Host "`n=== Related drivers ==="
 Get-PrinterDriver | Where-Object { $_.Name -match 'Zebra|ZDesigner|GC420|2844' } |
     Select-Object Name, Manufacturer, MajorVersion | Format-Table -AutoSize
 
-Write-Host "`n=== Puertos referenciados ==="
+Write-Host "`n=== Referenced ports ==="
 $portNames = $printers.PortName | Sort-Object -Unique
 Get-PrinterPort | Where-Object { $portNames -contains $_.Name } |
     Select-Object Name, Description, PrinterHostAddress, PortNumber | Format-Table -AutoSize
 
-Write-Host "`nNo se ha modificado ninguna cola ni se ha enviado ningún trabajo."
+Write-Host "`nNo queues were modified and no jobs were submitted."

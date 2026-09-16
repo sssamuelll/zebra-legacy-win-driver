@@ -11,13 +11,13 @@ public sealed class PrinterPresenceTests
     public void ConfiguredPrinterQueue_CanBeOpenedReadOnly()
     {
         if (!OperatingSystem.IsWindows())
-            Assert.Inconclusive("Requiere Windows.");
+            Assert.Inconclusive("Windows is required.");
         var printer = Environment.GetEnvironmentVariable("ZEBRA_TEST_PRINTER");
         if (string.IsNullOrWhiteSpace(printer))
-            Assert.Inconclusive("Defina ZEBRA_TEST_PRINTER con una cola autorizada.");
+            Assert.Inconclusive("Set ZEBRA_TEST_PRINTER to an authorized queue.");
 
         Assert.IsTrue(OpenPrinter(printer, out var handle, IntPtr.Zero),
-            $"No se pudo abrir la cola configurada (Win32 {Marshal.GetLastWin32Error()}).");
+            $"Could not open the configured queue (Win32 {Marshal.GetLastWin32Error()}).");
         try
         {
             Assert.AreNotEqual(IntPtr.Zero, handle);

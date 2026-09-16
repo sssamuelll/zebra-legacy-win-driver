@@ -23,10 +23,10 @@ public sealed class ProfileValidatorTests
     [TestMethod]
     public void Configuration_RejectsDuplicateNamesCaseInsensitively()
     {
-        var first = new PrinterProfile("almacen", "ZDesigner GC420d", PrinterModel.Gc420d, PrinterLanguage.Epl2, 203, 812, 406);
-        var second = first with { Name = "ALMACEN" };
+        var first = new PrinterProfile("warehouse", "ZDesigner GC420d", PrinterModel.Gc420d, PrinterLanguage.Epl2, 203, 812, 406);
+        var second = first with { Name = "WAREHOUSE" };
         var errors = ProfileValidator.Validate(new ProfileConfiguration(new[] { first, second }));
-        Assert.IsTrue(errors.Any(error => error.Contains("duplicado", StringComparison.OrdinalIgnoreCase)));
+        Assert.IsTrue(errors.Any(error => error.Contains("Duplicate", StringComparison.OrdinalIgnoreCase)));
     }
 
     [TestMethod]

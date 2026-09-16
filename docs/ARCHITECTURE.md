@@ -1,44 +1,44 @@
-# Arquitectura
+# Architecture
 
-## Alcance
+## Scope
 
-Este repositorio es una capa de compatibilidad de espacio de usuario para **Windows 10/11 x64**. No implementa un driver, no instala servicios, no toca el kernel y no firma código. La cola y el driver los proporciona ZDesigner v5, obtenido por el operador desde Zebra.
+This repository is a user-space compatibility layer for **Windows 10/11 x64**. It does not implement a driver, install services, touch the kernel, or sign code. The queue and driver are provided by ZDesigner v5, obtained from Zebra by the operator.
 
 ```text
 profiles.json
      │
      ▼
-ZebraLegacy.Cli ── valida / crea smoke label / dry-run por defecto
+ZebraLegacy.Cli ── validates / creates smoke label / dry-run by default
      │                         │
      │                         ▼
      │                 ZebraLegacy.Core
-     │                 perfiles + EPL2/ZPL
+     │                 profiles + EPL2/ZPL
      │
-     └── --send (solo Windows, acción explícita)
+     └── --send (Windows only, explicit action)
               ▼
        WindowsRawPrinter
        winspool.drv: OpenPrinter → StartDoc → StartPage → WritePrinter
               ▼
-       cola ZDesigner v5 → puerto configurado → impresora
+       ZDesigner v5 queue → configured port → printer
 ```
 
-## Límites y seguridad
+## Boundaries and safety
 
-- `ZebraLegacy.Core` no conoce Win32 y se prueba en cualquier SO con .NET 8.
-- `ZebraLegacy.Cli` contiene el adaptador `winspool.drv`; envía `DataType=RAW` para no transformar EPL2/ZPL.
-- El comando `smoke` solo calcula metadatos y SHA-256 salvo que se añada `--send`.
-- No se registra el payload ni se escriben `.prn` por defecto. Los errores muestran operación y código Win32, no el contenido.
-- Payload máximo de 1 MiB, dimensiones acotadas, texto ASCII neutralizado y perfiles validados.
-- La detección del modelo físico y del lenguaje precede a cualquier envío.
+- `ZebraLegacy.Core` has no Win32 dependency and is tested on any OS with .NET 8.
+- `ZebraLegacy.Cli` contains the `winspool.drv` adapter; it submits `DataType=RAW` so EPL2/ZPL is not transformed.
+- The `smoke` command only calculates metadata and SHA-256 unless `--send` is added.
+- The payload is not logged and `.prn` files are not written by default. Errors show the operation and Win32 code, not the content.
+- Payloads are limited to 1 MiB, dimensions are bounded, ASCII text is sanitized, and profiles are validated.
+- Physical model and language identification must precede any submission.
 
-## Componentes
+## Components
 
-- `src/ZebraLegacy.Core`: modelo, validación y generadores deterministas.
-- `src/ZebraLegacy.Cli`: configuración JSON, UX y spooler RAW.
-- `tests/ZebraLegacy.Core.Tests`: pruebas puras, sin hardware.
-- `tests/ZebraLegacy.IntegrationTests`: apertura de cola en modo lectura; inconclusa sin Windows o `ZEBRA_TEST_PRINTER`; nunca imprime.
-- `scripts`: inventario de solo lectura y comprobación del entorno.
+- `src/ZebraLegacy.Core`: model, validation, and deterministic generators.
+- `src/ZebraLegacy.Cli`: JSON configuration, UX, and RAW spooler.
+- `tests/ZebraLegacy.Core.Tests`: pure tests with no hardware.
+- `tests/ZebraLegacy.IntegrationTests`: opens a queue read-only; inconclusive without Windows or `ZEBRA_TEST_PRINTER`; never prints.
+- `scripts`: read-only inventory and environment checks.
 
-## Flujo de errores
+## Error flow
 
-El adaptador confirma página y documento solo después de una escritura completa; ante cualquier fallo intenta abortar el trabajo y siempre cierra el handle. Una operación fallida produce `RawPrintException`; no reintenta automáticamente, porque repetir un trabajo podría duplicar etiquetas. El operador decide si limpia la cola o repite.
+The adapter confirms the page and document only after a complete write. On any failure it attempts to abort the job and always closes the handle. A failed operation produces `RawPrintException`; it does not retry automatically because repeating a job could duplicate labels. The operator decides whether to clear the queue or retry.

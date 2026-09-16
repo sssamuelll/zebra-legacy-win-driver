@@ -1,37 +1,37 @@
-# Instalación en Windows 10/11 x64
+# Installation on Windows 10/11 x64
 
-> Este repositorio **no descarga ni incluye** drivers. Use únicamente fuentes oficiales y respete la licencia de Zebra.
+> This repository **does not download or include** drivers. Use official sources only and comply with the Zebra license.
 
-## 1. Obtener el software oficial
+## 1. Obtain the official software
 
-1. Abra el portal de soporte oficial: <https://www.zebra.com/us/en/support-downloads.html>.
-2. Busque exactamente el modelo de la placa: **GC420d**, **TLP 2844** o **TLP 2844-Z**.
-3. En la sección Drivers, localice **ZDesigner v5** compatible con Windows x64. Compruebe editor/firma digital, versión, SO declarado y condiciones de licencia.
-4. Si el portal ya no ofrece un paquete compatible, deténgase y escale a Zebra o al responsable de seguridad; no use mirrors ni paquetes reempaquetados.
+1. Open the official support portal: <https://www.zebra.com/us/en/support-downloads.html>.
+2. Search for the exact model on the nameplate: **GC420d**, **TLP 2844**, or **TLP 2844-Z**.
+3. In Drivers, locate **ZDesigner v5** compatible with Windows x64. Verify publisher/digital signature, version, declared OS, and license terms.
+4. If the portal no longer offers a compatible package, stop and escalate to Zebra or the security owner; do not use mirrors or repackaged bundles.
 
-No se automatiza esta descarga para evitar redistribución, URLs caducas y aceptación implícita de licencias.
+The download is not automated, to avoid redistribution, stale URLs, and implicit license acceptance.
 
-## 2. Antes de instalar
+## 2. Before installation
 
 - Complete `docs/INVENTORY_AND_PHYSICAL_PLAN.md`.
-- Desconecte USB hasta que el instalador lo solicite.
-- Cree un punto de restauración o siga el procedimiento corporativo.
-- Verifique que no haya una cola homónima usada en producción.
+- Leave USB disconnected until the installer requests it.
+- Create a restore point or follow the corporate procedure.
+- Verify that no same-named queue is in production use.
 
-## 3. Instalar y crear cola
+## 3. Install and create the queue
 
-Ejecute el instalador oficial como administrador siguiendo su asistente. Seleccione el **modelo exacto** y el puerto inventariado:
+Run the official installer as administrator and follow its wizard. Select the **exact model** and the inventoried port:
 
-- USB: puerto `USB00x` creado para el dispositivo correcto.
-- Serie: COM correcto y parámetros coincidentes en host/impresora.
-- Paralelo: LPT/adaptador validado.
-- Red: Standard TCP/IP con IP reservada; documente RAW 9100 u otro protocolo autorizado.
+- USB: the `USB00x` port created for the correct device.
+- Serial: the correct COM port with matching host/printer parameters.
+- Parallel: the validated LPT port/adapter.
+- Network: Standard TCP/IP with a reserved IP; document RAW 9100 or another authorized protocol.
 
-Asigne un nombre que contenga `ZDesigner`, porque la validación evita colas genéricas por accidente. En Propiedades de impresora → Avanzadas, confirme el driver ZDesigner esperado y un procesador/tipo RAW. **No pulse “Imprimir página de prueba” todavía.**
+Assign a name containing `ZDesigner`, because validation prevents accidental use of generic queues. Under Printer Properties → Advanced, confirm the expected ZDesigner driver and a RAW processor/data type. **Do not click “Print Test Page” yet.**
 
-## 4. Instalar la CLI
+## 4. Install the CLI
 
-Instale .NET 8 SDK desde <https://dotnet.microsoft.com/download/dotnet/8.0> y ejecute:
+Install the .NET 8 SDK from <https://dotnet.microsoft.com/download/dotnet/8.0> and run:
 
 ```powershell
 dotnet restore .\ZebraLegacy.sln
@@ -40,15 +40,15 @@ dotnet test .\ZebraLegacy.sln -c Release --no-build --filter "TestCategory!=Inte
 Copy-Item .\profiles.example.json .\profiles.local.json
 ```
 
-Edite `profiles.local.json` con la cola y el modelo comprobados. Primero valide y haga dry-run:
+Edit `profiles.local.json` with the verified queue and model. Validate and dry-run first:
 
 ```powershell
 dotnet run --project .\src\ZebraLegacy.Cli -- validate --config .\profiles.local.json
-dotnet run --project .\src\ZebraLegacy.Cli -- smoke --config .\profiles.local.json --profile almacen-gc420d
+dotnet run --project .\src\ZebraLegacy.Cli -- smoke --config .\profiles.local.json --profile warehouse-gc420d
 ```
 
-`--send` queda reservado al paso aprobado del plan físico.
+Reserve `--send` for the approved step in the physical plan.
 
-## 5. Desinstalación
+## 5. Uninstallation
 
-Elimine la CLI como archivos normales. La retirada de cola/driver es una acción administrativa separada: compruebe dependencias de otras colas y siga el procedimiento corporativo. No elimine el paquete del almacén de drivers a ciegas.
+Delete the CLI like ordinary files. Removing the queue/driver is a separate administrative action: check dependencies from other queues and follow the corporate procedure. Do not blindly delete the package from the driver store.

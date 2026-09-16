@@ -1,55 +1,55 @@
-# Inventario y plan de prueba física
+# Inventory and physical test plan
 
-No envíe trabajos hasta completar y revisar este documento para cada unidad.
+Do not submit jobs until this document has been completed and reviewed for each unit.
 
-## 1. Identificación inequívoca
+## 1. Unambiguous identification
 
-Fotografíe/transcriba sin datos sensibles:
+Photograph/transcribe without sensitive data:
 
-- Modelo exacto de la placa trasera/inferior: `GC420d`, `TLP 2844` o `TLP 2844-Z`.
-- Número de serie (guárdelo en el inventario corporativo, no en Git).
-- Tensión de la fuente y estado del cable.
-- Firmware indicado por la etiqueta de configuración/autodiagnóstico.
+- Exact model on the rear/bottom nameplate: `GC420d`, `TLP 2844`, or `TLP 2844-Z`.
+- Serial number (store it in the corporate inventory, not Git).
+- Power-supply voltage and cable condition.
+- Firmware shown on the configuration/self-test label.
 
-**TLP 2844 ≠ TLP 2844-Z.** No infiera el lenguaje por la carcasa o por una cola existente. En este proyecto:
+**TLP 2844 ≠ TLP 2844-Z.** Do not infer the language from the enclosure or an existing queue. In this project:
 
-- `Tlp2844`: EPL2 solamente.
-- `Tlp2844Z`: EPL2 o ZPL, después de confirmar placa/configuración.
-- `Gc420d`: EPL2 o ZPL; prefiera el lenguaje ya estandarizado en el entorno.
+- `Tlp2844`: EPL2 only.
+- `Tlp2844Z`: EPL2 or ZPL, after confirming the nameplate/configuration.
+- `Gc420d`: EPL2 or ZPL; prefer the language already standardized in the environment.
 
-## 2. Conectores y puerto
+## 2. Connectors and port
 
-Marque lo observado, sin conectar dos interfaces simultáneamente:
+Mark what is observed; do not connect two interfaces simultaneously:
 
-- [ ] USB-B directo, sin hub.
-- [ ] Serie DB9: cable/pinout, COM, baudios, bits, paridad, stop y flow control.
-- [ ] Paralelo Centronics: LPT o modelo exacto del adaptador.
-- [ ] Ethernet interno/servidor externo: MAC, IP, DHCP/reserva y protocolo.
+- [ ] Direct USB-B, without a hub.
+- [ ] DB9 serial: cable/pinout, COM port, baud, bits, parity, stop bits, and flow control.
+- [ ] Centronics parallel: LPT port or exact adapter model.
+- [ ] Internal Ethernet/external server: MAC, IP, DHCP/reservation, and protocol.
 
-Correlacione el conector físico con `Get-Printer ... PortName` y con `Inventory-Zebra.ps1`. Un nombre “USB” o “Zebra” no demuestra que sea la unidad correcta.
+Correlate the physical connector with `Get-Printer ... PortName` and `Inventory-Zebra.ps1`. A name containing “USB” or “Zebra” does not prove that it is the correct unit.
 
-## 3. Autodiagnóstico sin host
+## 3. Self-test without a host
 
-1. Apague la impresora y retire trabajos/cola del host.
-2. Cargue consumible correcto y compruebe sensores/cierre del cabezal.
-3. Siga el manual oficial específico del modelo para imprimir la etiqueta de configuración mediante el botón **FEED** (la secuencia varía). No improvise una secuencia de otro modelo.
-4. Capture modelo/firmware, lenguaje activo, dpi, sensores y parámetros de comunicación.
-5. Cancele el modo diagnóstico según el manual y reinicie si procede.
+1. Turn off the printer and remove jobs/the queue from the host.
+2. Load the correct media and check sensors/printhead closure.
+3. Follow the official model-specific manual to print the configuration label with the **FEED** button (the sequence varies). Do not improvise a sequence from another model.
+4. Record the model/firmware, active language, dpi, sensors, and communication parameters.
+5. Exit diagnostic mode according to the manual and restart if appropriate.
 
-El autodiagnóstico consume una etiqueta, pero no usa el PC y ayuda a separar fallos de hardware de fallos de cola.
+The self-test consumes one label but does not use the PC, helping separate hardware failures from queue failures.
 
-## 4. Plan de smoke test supervisado
+## 4. Supervised smoke-test plan
 
-- [ ] Inventario revisado por dos personas o por el responsable del equipo.
-- [ ] Cola vacía y no compartida; ventana de prueba aprobada.
-- [ ] Modelo, lenguaje, ancho/alto en dots y consumible coinciden.
-- [ ] CLI `validate` devuelve 0.
-- [ ] CLI `smoke` sin `--send` muestra `DRY-RUN`, longitud y SHA-256.
-- [ ] Operador está junto a la impresora y puede apagarla/cancelar la cola.
-- [ ] Ejecutar una única vez con `--send`.
-- [ ] Verificar una etiqueta: texto completo, orientación, no avance continuo.
-- [ ] Registrar resultado externamente sin commitear seriales ni payloads.
+- [ ] Inventory reviewed by two people or the equipment owner.
+- [ ] Queue empty and not shared; test window approved.
+- [ ] Model, language, width/height in dots, and media match.
+- [ ] CLI `validate` returns 0.
+- [ ] CLI `smoke` without `--send` shows `DRY-RUN`, length, and SHA-256.
+- [ ] Operator is beside the printer and can turn it off/cancel the queue.
+- [ ] Run exactly once with `--send`.
+- [ ] Verify one label: complete text, correct orientation, no continuous feed.
+- [ ] Record the result externally without committing serial numbers or payloads.
 
-## 5. Criterios de parada
+## 5. Stop criteria
 
-Apague/cancele y no reintente automáticamente si: avance continuo, caracteres/comandos impresos como texto, cola bloqueada, modelo ambiguo, tamaño incorrecto, temperatura/ruido anormal o más de una etiqueta. Revise lenguaje, puerto, driver, dimensiones y calibración antes de otro intento.
+Turn off/cancel and do not retry automatically if there is continuous feed, characters/commands printed as text, a blocked queue, an ambiguous model, incorrect size, abnormal temperature/noise, or more than one label. Review language, port, driver, dimensions, and calibration before another attempt.

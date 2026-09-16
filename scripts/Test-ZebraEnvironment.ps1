@@ -5,7 +5,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-if ($env:OS -ne 'Windows_NT') { throw 'Requiere Windows.' }
+if ($env:OS -ne 'Windows_NT') { throw 'Windows is required.' }
 
 $printer = Get-Printer -Name $PrinterName -ErrorAction Stop
 $driver = Get-PrinterDriver -Name $printer.DriverName -ErrorAction Stop
@@ -21,6 +21,6 @@ $port = Get-PrinterPort -Name $printer.PortName -ErrorAction Stop
 } | Format-List
 
 if ($driver.Name -notmatch 'ZDesigner') {
-    throw 'La cola no usa un driver cuyo nombre contenga ZDesigner.'
+    throw 'The queue does not use a driver whose name contains ZDesigner.'
 }
-Write-Host 'Comprobación de solo lectura completada; no se imprimió nada.'
+Write-Host 'Read-only check completed; nothing was printed.'

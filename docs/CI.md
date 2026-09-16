@@ -1,8 +1,8 @@
-# CI y verificación local
+# CI and local verification
 
 ## Local
 
-Requiere SDK .NET 8:
+Requires the .NET 8 SDK:
 
 ```bash
 dotnet restore ZebraLegacy.sln
@@ -11,15 +11,15 @@ dotnet test ZebraLegacy.sln -c Release --no-build --filter "TestCategory!=Integr
 dotnet format ZebraLegacy.sln --verify-no-changes --no-restore
 ```
 
-En Windows, la prueba de integración de solo lectura se habilita definiendo una cola explícita; **no envía bytes**:
+On Windows, enable the read-only integration test by specifying an explicit queue; it **does not send bytes**:
 
 ```powershell
 $env:ZEBRA_TEST_PRINTER = 'ZDesigner GC420d'
 dotnet test .\tests\ZebraLegacy.IntegrationTests -c Release --filter TestCategory=Integration
 ```
 
-Sin Windows o sin variable, MSTest la marca inconclusa/omitida.
+Without Windows or the variable, MSTest marks it inconclusive/skipped.
 
-## Automatización
+## Automation
 
-`.github/workflows/ci.yml` compila y ejecuta unit tests en Windows y macOS con .NET 8. Excluye la categoría `Integration` para no depender de hardware ni spooler. No publica artefactos y no descarga drivers Zebra.
+`.github/workflows/ci.yml` builds and runs unit tests on Windows and macOS with .NET 8. It excludes the `Integration` category to avoid hardware and spooler dependencies. It does not publish artifacts or download Zebra drivers.

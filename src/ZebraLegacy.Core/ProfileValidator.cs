@@ -9,26 +9,26 @@ public static partial class ProfileValidator
         var errors = new List<string>();
         if (profile is null)
         {
-            errors.Add("El perfil no puede ser nulo.");
+            errors.Add("The profile cannot be null.");
             return errors;
         }
 
         if (string.IsNullOrWhiteSpace(profile.Name) || !ProfileNameRegex().IsMatch(profile.Name))
-            errors.Add("Name debe contener solo letras, números, '.', '_' o '-' (1-64 caracteres).");
+            errors.Add("Name must contain only letters, numbers, '.', '_', or '-' (1-64 characters).");
 
         if (string.IsNullOrWhiteSpace(profile.PrinterName) || profile.PrinterName.Length > 255 || HasControlCharacters(profile.PrinterName))
-            errors.Add("PrinterName debe tener entre 1 y 255 caracteres y no contener controles.");
+            errors.Add("PrinterName must be 1 to 255 characters and contain no control characters.");
         else if (!profile.PrinterName.Contains("ZDesigner", StringComparison.OrdinalIgnoreCase))
-            errors.Add("PrinterName debe identificar una cola instalada con ZDesigner.");
+            errors.Add("PrinterName must identify an installed ZDesigner queue.");
 
         if (profile.Dpi != 203)
-            errors.Add("Los modelos cubiertos por este proyecto requieren un perfil de 203 dpi.");
+            errors.Add("Models covered by this project require a 203 dpi profile.");
         if (profile.WidthDots is < 100 or > 832)
-            errors.Add("WidthDots debe estar entre 100 y 832.");
+            errors.Add("WidthDots must be between 100 and 832.");
         if (profile.HeightDots is < 100 or > 4000)
-            errors.Add("HeightDots debe estar entre 100 y 4000.");
+            errors.Add("HeightDots must be between 100 and 4000.");
         if (profile.Model == PrinterModel.Tlp2844 && profile.Language != PrinterLanguage.Epl2)
-            errors.Add("TLP 2844 (sin sufijo -Z) se configura aquí solo con EPL2; confirme físicamente el modelo.");
+            errors.Add("TLP 2844 (without the -Z suffix) is configured here only with EPL2; physically confirm the model.");
 
         return errors;
     }
@@ -38,7 +38,7 @@ public static partial class ProfileValidator
         var errors = new List<string>();
         if (configuration?.Profiles is null || configuration.Profiles.Count == 0)
         {
-            errors.Add("La configuración debe contener al menos un perfil.");
+            errors.Add("The configuration must contain at least one profile.");
             return errors;
         }
 
@@ -46,7 +46,7 @@ public static partial class ProfileValidator
             errors.AddRange(Validate(configuration.Profiles[index]).Select(error => $"profiles[{index}]: {error}"));
 
         foreach (var duplicate in configuration.Profiles.Where(p => p is not null).GroupBy(p => p.Name, StringComparer.OrdinalIgnoreCase).Where(g => g.Count() > 1))
-            errors.Add($"Nombre de perfil duplicado: {duplicate.Key}.");
+            errors.Add($"Duplicate profile name: {duplicate.Key}.");
 
         return errors;
     }

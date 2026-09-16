@@ -10,9 +10,9 @@ internal sealed class WindowsRawPrinter : IRawPrinter
 {
     public void Send(string printerName, ReadOnlySpan<byte> payload, string documentName)
     {
-        if (string.IsNullOrWhiteSpace(printerName)) throw new ArgumentException("Nombre de impresora vacío.", nameof(printerName));
-        if (payload.IsEmpty) throw new ArgumentException("El payload RAW está vacío.", nameof(payload));
-        if (payload.Length > 1_048_576) throw new ArgumentException("El payload RAW excede 1 MiB.", nameof(payload));
+        if (string.IsNullOrWhiteSpace(printerName)) throw new ArgumentException("Printer name is empty.", nameof(printerName));
+        if (payload.IsEmpty) throw new ArgumentException("The RAW payload is empty.", nameof(payload));
+        if (payload.Length > 1_048_576) throw new ArgumentException("The RAW payload exceeds 1 MiB.", nameof(payload));
 
         IntPtr printer = IntPtr.Zero;
         var documentStarted = false;
@@ -20,7 +20,7 @@ internal sealed class WindowsRawPrinter : IRawPrinter
         try
         {
             if (!NativeMethods.OpenPrinter(printerName, out printer, IntPtr.Zero))
-                ThrowSpooler("No se pudo abrir la cola de impresión");
+                ThrowSpooler("Could not open the printer queue");
 
             var info = new NativeMethods.DocInfo
             {
@@ -28,19 +28,19 @@ internal sealed class WindowsRawPrinter : IRawPrinter
                 DataType = "RAW"
             };
             if (NativeMethods.StartDocPrinter(printer, 1, ref info) == 0)
-                ThrowSpooler("No se pudo iniciar el documento RAW");
+                ThrowSpooler("Could not start the RAW document");
             documentStarted = true;
 
             if (!NativeMethods.StartPagePrinter(printer))
-                ThrowSpooler("No se pudo iniciar la página");
+                ThrowSpooler("Could not start the page");
 
             var bytes = payload.ToArray();
             if (!NativeMethods.WritePrinter(printer, bytes, bytes.Length, out var written) || written != bytes.Length)
-                ThrowSpooler("El spooler no aceptó todos los bytes");
+                ThrowSpooler("The spooler did not accept all bytes");
             if (!NativeMethods.EndPagePrinter(printer))
-                ThrowSpooler("No se pudo finalizar la página");
+                ThrowSpooler("Could not end the page");
             if (!NativeMethods.EndDocPrinter(printer))
-                ThrowSpooler("No se pudo confirmar el documento RAW");
+                ThrowSpooler("Could not commit the RAW document");
 
             completed = true;
             documentStarted = false;
@@ -51,7 +51,7 @@ internal sealed class WindowsRawPrinter : IRawPrinter
         }
         catch (Exception exception)
         {
-            throw new RawPrintException("Falló el envío RAW al spooler. No se registró el contenido de la etiqueta.", exception);
+            throw new RawPrintException("RAW submission to the spooler failed. The label contents were not logged.", exception);
         }
         finally
         {
