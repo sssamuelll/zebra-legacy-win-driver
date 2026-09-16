@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraLegacy.Core", "src\ZebraLegacy.Core\ZebraLegacy.Core.csproj", "{0EB22909-9BAB-4FCA-B785-A6964FCA43C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraLegacy.Cli", "src\ZebraLegacy.Cli\ZebraLegacy.Cli.csproj", "{DA12C40D-0EEA-4E28-B4F2-D99C94088268}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraLegacy.Core.Tests", "tests\ZebraLegacy.Core.Tests\ZebraLegacy.Core.Tests.csproj", "{4F258921-F0A8-4D2E-9A36-65E25EC579C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZebraLegacy.IntegrationTests", "tests\ZebraLegacy.IntegrationTests\ZebraLegacy.IntegrationTests.csproj", "{E7E40CD4-054A-4D9B-8AD1-A274B79152FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0EB22909-9BAB-4FCA-B785-A6964FCA43C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EB22909-9BAB-4FCA-B785-A6964FCA43C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EB22909-9BAB-4FCA-B785-A6964FCA43C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EB22909-9BAB-4FCA-B785-A6964FCA43C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA12C40D-0EEA-4E28-B4F2-D99C94088268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA12C40D-0EEA-4E28-B4F2-D99C94088268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA12C40D-0EEA-4E28-B4F2-D99C94088268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA12C40D-0EEA-4E28-B4F2-D99C94088268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F258921-F0A8-4D2E-9A36-65E25EC579C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F258921-F0A8-4D2E-9A36-65E25EC579C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F258921-F0A8-4D2E-9A36-65E25EC579C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F258921-F0A8-4D2E-9A36-65E25EC579C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E40CD4-054A-4D9B-8AD1-A274B79152FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E40CD4-054A-4D9B-8AD1-A274B79152FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E40CD4-054A-4D9B-8AD1-A274B79152FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E40CD4-054A-4D9B-8AD1-A274B79152FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
